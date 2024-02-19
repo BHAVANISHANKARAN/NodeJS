@@ -1,7 +1,86 @@
-const express = require("express");
+// const express = require("express"); // type:commonjs
+
+import express from "express"; // type:module // default imports
+import { sequelize } from "./config.js";
+import { User } from "./user.js";
+
+// const sequelize = new Sequelize("postgres://user:pass@example.com:5432/dbname"); // connection string
+
+try {
+  await sequelize.authenticate();
+  await sequelize.sync();
+  console.log("Connection has been established successfully.");
+} catch (error) {
+  console.error("Unable to connect to the database:", error);
+}
 const app = express(); // object
 
+app.use(express.json());
+// Create a new user
+
+// const user1 = await User.create({
+//   name: "raj",
+//   email: "rajsekard2003@gmail.com",
+// });
+
+// app.get("/users", async function (request, response) {
+//   var ans = await User.findAll({
+//     attributes: ["name", "email"],
+//   });
+//   response.send(ans);
+// });
+
+// app.get("/users/:id", async function (request, response) {
+//   console.log(request.params.id);
+//   const { id } = request.params;
+//   var ans = await User.findOne({
+//     where: {
+//       id: id,
+//     },
+//   });
+//   response.send(ans);
+// });
+
+// app.post("/users", async function (request, response) {
+//   // console.log(request.body);
+//   var ans = request.body;
+
+//   var insertedValue = await User.create(ans);
+
+//   // response.send(insertedValue);
+//   response.send(insertedValue);
+// });
+
+// app.delete("/users/:id", async function (request, response) {
+//   console.log(request.params.id);
+//   const { id } = request.params;
+//   const msg = { msg: "not found" };
+//   var ans = await User.destroy({
+//     where: {
+//       id: id,
+//     },
+//   });
+//   ans ? response.send(ans) : response.status(404).send(msg);
+// });
+
+app.put("/users/:id", async function (request, response) {
+  // console.log(request.body);
+  const { id } = request.params;
+  const { name } = request.body;
+  const msg = { msg: "not found" };
+  var ans = await User.update(
+    { name },
+    {
+      where: {
+        id: id,
+      },
+    }
+  );
+  ans ? response.send(ans) : response.status(404).send(msg);
+});
+
 const PORT = 4000;
+//console.log("Jane's auto-generated ID:", jane.id);
 
 const movies = [
   {
@@ -129,20 +208,20 @@ const movies = [
 //   }
 // });
 
-app.get("/movies", function (request, response) {
-  //first argument is API end point
-  // console.log(request.query);
-  const res = request.query.name;
+// app.get("/movies", function (request, response) {
+//   //first argument is API end point
+//   // console.log(request.query);
+//   const res = request.query.name;
 
-  // console.log(request.params.id);
-  const NOT_FOUND_MSG = { msg: "Movie not found" };
+//   // console.log(request.params.id);
+//   const NOT_FOUND_MSG = { msg: "Movie not found" };
 
-  const result = movies.find((movie) => movie.name == res);
-  if (result) {
-    response.send(result);
-  } else {
-    response.send(movies);
-  }
-});
+//   const result = movies.find((movie) => movie.name == res);
+//   if (result) {
+//     response.send(result);
+//   } else {
+//     response.send(movies);
+//   }
+// });
 
 app.listen(PORT, () => console.log(`The server started in: ${PORT} ✨✨`)); // makes the port run
